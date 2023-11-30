@@ -1,0 +1,47 @@
+.DS_Store
+
+.env.local
+.env.*.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.idea/
+__pycache__/
+db.sqlite3
+
+venv/
+.env
+staticfiles/
+media/profile/
+.log
+
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+#убрать после создани виртуальных переменных
+static
+templates
+settings.py
