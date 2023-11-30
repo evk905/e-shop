@@ -1,0 +1,51 @@
+{% extends "product/base.html" %}
+{% load static %}
+
+{% block title %}
+  Товары
+{% endblock %}
+
+{% block content %}
+  <div id="sidebar">
+    <h3>Категории товаров</h3>
+      <ul>
+          {% for c in categories %}
+          <li>
+              <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          </li>
+          {% endfor %}
+      </ul>
+      <ul>
+      </ul>
+     <ul>
+     <h3>Модели товаров</h3>
+
+      {% for m in models %}
+        <li >
+          <a href="{{ m.get_absolute_url }}">{{ m.name }}</a>
+        </li>
+      {% endfor %}
+         </ul>
+<ul>
+      <li >
+        <a href="{% url 'product_list'%}">Все товары</a>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <div id="main" class="product-list">
+    <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
+    {% for product in products %}
+      <div class="item">
+        <a href="{{ product.get_absolute_url }}">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}">
+        </a>
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        <br>
+        ${{ product.price }}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

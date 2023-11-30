@@ -1,0 +1,11 @@
+{% extends "product/base.html" %}
+{% load static %}
+
+<h3>Модели товаров</h3>
+      <ul>
+          {% for m in models %}
+          <li>
+              {{ m.name }}
+          </li>
+          {% endfor %}
+      </ul>
