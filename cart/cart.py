@@ -30,11 +30,6 @@ class Cart(object):
             self.cart[product_id]['quantity'] += quantity
         self.save()
 
-    def save(self):
-        # Обновление сессии cart
-        self.session[settings.CART_SESSION_ID] = self.cart
-        # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
-        self.session.modified = True
 
     def remove(self, product):
         """
@@ -76,4 +71,10 @@ class Cart(object):
     def clear(self):
         # удаление корзины из сессии
         del self.session[settings.CART_SESSION_ID]
+        self.session.modified = True
+
+    def save(self):
+        # Обновление сессии cart
+        self.session[settings.CART_SESSION_ID] = self.cart
+        # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
         self.session.modified = True
