@@ -1,30 +1,42 @@
-
-from django.shortcuts import redirect, get_object_or_404
-from django.views import View
-from product.models import Product
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .cart import Cart
-from .forms import CartAddProductForm
+from .serializes import CartItemSerializer
 
 
-#
-# class CartFormView(View):
-#     """Представление для добавления товаров через форму
-#     Представление для удаления 1 шт. товара из корзины"""
-#     http_method_names = ['post', 'get']
-#
-#     def post(self, request, product_id):
-#         cart = Cart(request)
-#         product = get_object_or_404(Product, id=product_id)
-#         form = CartAddProductForm(request.POST)
-#         if form.is_valid():
-#             cd = form.cleaned_data
-#             cart.add(product=product,
-#                      quantity=cd['quantity'],
-#                      update_quantity=cd['update'])
-#         return redirect('cart:cart_detail')
-#
-#     def get(self, request, product_id):
-#         cart = Cart(request)
-#         product = get_object_or_404(Product, id=product_id)
-#         cart.remove(product)
-#         return redirect('cart:cart_detail')
+class CartAPIView(APIView):
+    def get(self, request):
+        cart = Cart(request)
+        cart_contents = [{'product_id': item['product_id'], 'quantity': item['quantity']} for item in cart]
+        serializer = CartItemSerializer(cart_contents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            product_id = serializer.validated_data['product_id']
+            quantity = serializer.validated_data['quantity']
+            cart = Cart(request)
+            cart.add(product_id, quantity)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            product_id = serializer.validated_data['product_id']
+            quantity = serializer.validated_data['quantity']
+            cart = Cart(request)
+            cart.add(product_id, quantity, update_quantity=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            product_id = serializer.validated_data['product_id']
+            cart = Cart(request)
+            cart.remove(product_id)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
